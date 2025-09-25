@@ -77,3 +77,32 @@ class UbuntuImageFetcher:
             return False, "Content doesn't appear to be a valid image"
         
         return True, "Valid image"
+    
+      def _generate_filename(self, url: str, content_type: str) -> str:
+        """Generate appropriate filename from URL or content type"""
+        parsed_url = urlparse(url)
+        filename = os.path.basename(parsed_url.path)
+        
+        # If no filename from URL, generate one
+        if not filename or '.' not in filename:
+            # Get extension from content-type
+            extension = mimetypes.guess_extension(content_type.split(';')[0])
+            if not extension:
+                extension = '.jpg'  # Default fallback
+            
+            # Create filename from domain and timestamp
+            domain = parsed_url.netloc.replace('www.', '')
+            timestamp = int(time.time())
+            filename = f"{domain}_{timestamp}{extension}"
+        
+        # Sanitize filename for filesystem compatibility
+        filename = "".join(c for c in filename if c.isalnum() or c in '.-_')
+        return filename
+    
+    def _check_duplicate(self, content: bytes) -> bool:
+        """Check if image is duplicate based on content hash"""
+        content_hash = hashlib.md5(content).hexdigest()
+        if content_hash in self.downloaded_hashes:
+            return True
+        self.downloaded_hashes.add(content_hash)
+        return False
