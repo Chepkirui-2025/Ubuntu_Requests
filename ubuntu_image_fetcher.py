@@ -196,49 +196,94 @@ class UbuntuImageFetcher:
         return successful, failed
 
 
-    def display_ubuntu_wisdom():
-        """Display Ubuntu philosophy and program purpose"""
-        print("=" * 60)
-        print(" UBUNTU IMAGE FETCHER ")
-        print("=" * 60)
-        print("\"I am because we are\" - Ubuntu Philosophy")
-        print()
-        print("A tool for mindfully collecting images from the web community")
-        print("Embodying principles of:")
-        print("   Community - Connecting to the global web")
-        print("   Respect - Handling errors gracefully")
-        print("   Sharing - Organizing for collective benefit")
-        print("    Practicality - Serving real community needs")
-        print("=" * 60)
+def display_ubuntu_wisdom():
+    """Display Ubuntu philosophy and program purpose"""
+    print("=" * 60)
+    print(" UBUNTU IMAGE FETCHER ")
+    print("=" * 60)
+    print("\"I am because we are\" - Ubuntu Philosophy")
+    print()
+    print("A tool for mindfully collecting images from the web community")
+    print("Embodying principles of:")
+    print("   Community - Connecting to the global web")
+    print("   Respect - Handling errors gracefully")
+    print("   Sharing - Organizing for collective benefit")
+    print("    Practicality - Serving real community needs")
+    print("=" * 60)
 
-    def get_user_choice():
-        """Get user's choice for single or multiple URLs"""
-        print("\nChoose your approach:")
-        print("1. Fetch single image")
-        print("2. Fetch multiple images")
-        print("3. Exit")
+def get_user_choice():
+    """Get user's choice for single or multiple URLs"""
+    print("\nChoose your approach:")
+    print("1. Fetch single image")
+    print("2. Fetch multiple images")
+    print("3. Exit")
+    
+    while True:
+        choice = input("\nEnter your choice (1-3): ").strip()
+        if choice in ['1', '2', '3']:
+            return choice
+        print("Please enter 1, 2, or 3")
+
+
+def get_single_url() -> str:
+    """Get single URL from user"""
+    return input("\nPlease enter the image URL: ").strip()
+
+
+def get_multiple_urls() -> List[str]:
+    """Get multiple URLs from user"""
+    urls = []
+    print("\nEnter image URLs (one per line, empty line to finish):")
+    
+    while True:
+        url = input("URL: ").strip()
+        if not url:
+            break
+        urls.append(url)
+    
+    return urls
+
+def main():
+    """
+    Main function embodying Ubuntu philosophy
+    """
+    display_ubuntu_wisdom()
+    
+    fetcher = UbuntuImageFetcher()
+    
+    while True:
+        choice = get_user_choice()
         
-        while True:
-            choice = input("\nEnter your choice (1-3): ").strip()
-            if choice in ['1', '2', '3']:
-                return choice
-            print("Please enter 1, 2, or 3")
-
-
-    def get_single_url() -> str:
-        """Get single URL from user"""
-        return input("\nPlease enter the image URL: ").strip()
-
-
-    def get_multiple_urls() -> List[str]:
-        """Get multiple URLs from user"""
-        urls = []
-        print("\nEnter image URLs (one per line, empty line to finish):")
+        if choice == '3':
+            print("\n Thank you for strengthening our digital community!")
+            print("\"A person is a person through other persons\" - Ubuntu")
+            break
         
-        while True:
-            url = input("URL: ").strip()
-            if not url:
-                break
-            urls.append(url)
+        elif choice == '1':
+            url = get_single_url()
+            if url:
+                print(f"\nConnecting with community spirit...")
+                success = fetcher.fetch_image(url)
+                if success:
+                    print("\n Connection strengthened. Community enriched.")
+                else:
+                    print("\n Even failed connections teach us Ubuntu - we try again together.")
         
-        return urls
+        elif choice == '2':
+            urls = get_multiple_urls()
+            if urls:
+                successful, failed = fetcher.fetch_multiple_images(urls)
+                print(f"\n Community Harvest Summary:")
+                print(f"✓ Successfully gathered: {successful} images")
+                print(f"✗ Respectfully skipped: {failed} images")
+                print(f"\n Ubuntu spirit: Every attempt strengthens the community!")
+        
+        # Ask if user wants to continue
+        continue_choice = input("\nWould you like to continue? (y/n): ").strip().lower()
+        if continue_choice not in ['y', 'yes']:
+            print("\n Thank you for participating in our Ubuntu community!")
+            break
+
+
+if __name__ == "__main__":
+    main()
