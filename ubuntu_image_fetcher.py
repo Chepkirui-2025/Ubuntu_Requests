@@ -210,3 +210,35 @@ class UbuntuImageFetcher:
         print("   Sharing - Organizing for collective benefit")
         print("    Practicality - Serving real community needs")
         print("=" * 60)
+
+    def get_user_choice():
+        """Get user's choice for single or multiple URLs"""
+        print("\nChoose your approach:")
+        print("1. Fetch single image")
+        print("2. Fetch multiple images")
+        print("3. Exit")
+        
+        while True:
+            choice = input("\nEnter your choice (1-3): ").strip()
+            if choice in ['1', '2', '3']:
+                return choice
+            print("Please enter 1, 2, or 3")
+
+
+    def get_single_url() -> str:
+        """Get single URL from user"""
+        return input("\nPlease enter the image URL: ").strip()
+
+
+    def get_multiple_urls() -> List[str]:
+        """Get multiple URLs from user"""
+        urls = []
+        print("\nEnter image URLs (one per line, empty line to finish):")
+        
+        while True:
+            url = input("URL: ").strip()
+            if not url:
+                break
+            urls.append(url)
+        
+        return urls
