@@ -78,7 +78,7 @@ class UbuntuImageFetcher:
         
         return True, "Valid image"
     
-      def _generate_filename(self, url: str, content_type: str) -> str:
+    def _generate_filename(self, url: str, content_type: str) -> str:
         """Generate appropriate filename from URL or content type"""
         parsed_url = urlparse(url)
         filename = os.path.basename(parsed_url.path)
@@ -106,3 +106,68 @@ class UbuntuImageFetcher:
             return True
         self.downloaded_hashes.add(content_hash)
         return False
+    
+    def fetch_image(self, url: str) -> bool:
+        """
+        Fetch single image with Ubuntu principles: respect, community, sharing
+        """
+        try:
+            print(f"Connecting to: {url}")
+            
+            # Respectful request with timeout
+            response = self.session.get(url, timeout=10, stream=True)
+            response.raise_for_status()
+            
+            # Validate the response
+            is_valid, message = self._validate_image_response(response, url)
+            if not is_valid:
+                print(f"✗ Validation failed: {message}")
+                return False
+            
+            # Get the full content
+            content = response.content
+            
+            # Check for duplicates
+            if self._check_duplicate(content):
+                print(f"✗ Duplicate image detected - skipping to respect storage")
+                return False
+            
+            # Create directory with community spirit
+            os.makedirs(self.base_dir, exist_ok=True)
+            
+            # Generate filename
+            content_type = response.headers.get('content-type', 'image/jpeg')
+            filename = self._generate_filename(url, content_type)
+            filepath = self.base_dir / filename
+            
+            # Ensure unique filename
+            counter = 1
+            original_filepath = filepath
+            while filepath.exists():
+                name, ext = original_filepath.stem, original_filepath.suffix
+                filepath = self.base_dir / f"{name}_{counter}{ext}"
+                counter += 1
+            
+            # Save with Ubuntu sharing spirit
+            with open(filepath, 'wb') as f:
+                f.write(content)
+            
+            print(f"✓ Successfully fetched: {filename}")
+            print(f"✓ Image saved to {filepath}")
+            return True
+            
+        except requests.exceptions.Timeout:
+            print(f"✗ Connection timeout - respecting server limits")
+            return False
+        except requests.exceptions.ConnectionError:
+            print(f"✗ Connection error - network community unavailable")
+            return False
+        except requests.exceptions.HTTPError as e:
+            print(f"✗ HTTP error {e.response.status_code}: Server respectfully declined")
+            return False
+        except requests.exceptions.RequestException as e:
+            print(f"✗ Request error: {e}")
+            return False
+        except Exception as e:
+            print(f"✗ Unexpected error: {e}")
+            return False
