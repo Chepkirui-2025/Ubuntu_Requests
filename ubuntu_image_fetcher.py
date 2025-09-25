@@ -171,3 +171,42 @@ class UbuntuImageFetcher:
         except Exception as e:
             print(f"✗ Unexpected error: {e}")
             return False
+        
+    def fetch_multiple_images(self, urls: List[str]) -> Tuple[int, int]:
+        """
+        Fetch multiple images - extending Ubuntu community reach
+        """
+        successful = 0
+        failed = 0
+        
+        print(f"\nFetching {len(urls)} images with Ubuntu community spirit...")
+        print("=" * 60)
+        
+        for i, url in enumerate(urls, 1):
+            print(f"\n[{i}/{len(urls)}] Processing: {url}")
+            if self.fetch_image(url):
+                successful += 1
+            else:
+                failed += 1
+            
+            # Respectful delay between requests
+            if i < len(urls):
+                time.sleep(0.5)
+        
+        return successful, failed
+
+
+    def display_ubuntu_wisdom():
+        """Display Ubuntu philosophy and program purpose"""
+        print("=" * 60)
+        print(" UBUNTU IMAGE FETCHER ")
+        print("=" * 60)
+        print("\"I am because we are\" - Ubuntu Philosophy")
+        print()
+        print("A tool for mindfully collecting images from the web community")
+        print("Embodying principles of:")
+        print("   Community - Connecting to the global web")
+        print("   Respect - Handling errors gracefully")
+        print("   Sharing - Organizing for collective benefit")
+        print("    Practicality - Serving real community needs")
+        print("=" * 60)
